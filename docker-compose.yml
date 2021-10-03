@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  app:
+    build: ./
+    privileged: true
+    volumes:
+      - ./config:/root/.config
+      - ./local:/root/.local
+      - ./work:/work
+    restart: unless-stopped
