@@ -3,11 +3,41 @@ version: "3"
 services:
   app:
     build: ./
-    privileged: true
+    container_name: code
+    environment:
+      TZ: Asia/Tokyo
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_TLS_VERIFY: "true"
+      DOCKER_CERT_PATH: /certs/client
     volumes:
+      - certs:/certs
       - ./config:/root/.config
       - ./local:/root/.local
       - ./work:/work
-    ports:
-      - "8080:8080"
+    depends_on:
+      - docker
+    networks:
+      - web_nw
     restart: unless-stopped
+
+  docker:
+    image: docker:dind
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+    volumes:
+      - certs:/certs
+      - ./work:/work
+    ports:
+      - "9000-9099:9000-9099"
+    networks:
+      - web_nw
+    restart: unless-stopped
+
+volumes:
+  certs:
+    driver: local
+
+networks:
+  web_nw:
+    external: true
