@@ -14,10 +14,10 @@ services:
       - ./config:/root/.config
       - ./local:/root/.local
       - ./work:/work
+    ports:
+      - "8080:8080"
     depends_on:
       - docker
-    networks:
-      - web_nw
     restart: unless-stopped
 
   docker:
